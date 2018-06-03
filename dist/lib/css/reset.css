@@ -1,0 +1,14 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+#box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 200px;
+  height: 200px;
+  -webkit-transform: translateX(200);
+              -ms-transform: translateX(200);
+          transform: translateX(200);
+}

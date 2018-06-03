@@ -1,0 +1,36 @@
+{
+  "name": "gulp-init",
+  "version": "1.0.0",
+  "description": "A tool for initing projects.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["gulp", "javascript"],
+  "author": "Rectmoon",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^8.6.0",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.3",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "browser-sync": "^2.24.4",
+    "chalk": "^2.4.1",
+    "cross-env": "^5.1.6",
+    "css-mqpacker": "^6.0.2",
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.9.4",
+    "gulp-file-include": "^2.0.1",
+    "gulp-htmlmin": "^4.0.0",
+    "gulp-if": "^2.0.2",
+    "gulp-plumber": "^1.2.0",
+    "gulp-postcss": "^7.0.1",
+    "gulp-sequence": "^1.0.0",
+    "gulp-stylus": "^2.7.0",
+    "postcss-cssnext": "^3.1.0",
+    "postcss-import": "^11.1.0"
+  }
+}
