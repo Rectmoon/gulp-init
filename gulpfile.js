@@ -8,11 +8,17 @@ const fuleinclude = require('gulp-file-include')
 const del = require('del')
 const chalk = require('chalk')
 const gulpSequence = require('gulp-sequence')
+const uglify = require('gulp-uglify')
 const stylus = require('gulp-stylus')
 const postcss = require('gulp-postcss')
 const cleanCss = require('gulp-clean-css')
+const babel = require('gulp-babel')
 
 const isProduction = process.env.NODE_ENV === 'production'
+
+const webpack = require('webpack')
+const webpackStream = require('webpack-stream')
+const webpackConfig = require('./webpack.config.js')
 
 function resolve1(dir) {
   return path.join(__dirname, '', dir)
@@ -48,6 +54,23 @@ function runTasks(tasks) {
       .catch(e => {})
   })
 }
+
+gulp.task('scripts', function(callback) {
+  return gulp
+    .src(config.dev.scripts)
+    .pipe(plumber(onErr))
+    .pipe(
+      gulpif(
+        isProduction,
+        babel({
+          presets: ['env']
+        })
+      )
+    )
+    .pipe(gulpif(config.useWebpack, webpackStream(webpackConfig, webpack)))
+    .pipe(gulpif(isProduction, uglify()))
+    .pipe(gulp.dest(config.build.scripts))
+})
 
 gulp.task('html', _ => {
   return gulp
