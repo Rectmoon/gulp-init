@@ -4,29 +4,40 @@ const gulp = require('gulp')
 const htmlmin = require('gulp-htmlmin')
 const gulpif = require('gulp-if')
 const plumber = require('gulp-plumber')
+const notify = require('gulp-notify')
 const fuleinclude = require('gulp-file-include')
 const del = require('del')
 const chalk = require('chalk')
 const gulpSequence = require('gulp-sequence')
 const uglify = require('gulp-uglify')
 const stylus = require('gulp-stylus')
+const sass = require('gulp-sass')
+const less = require('gulp-less')
 const postcss = require('gulp-postcss')
 const cleanCss = require('gulp-clean-css')
 const babel = require('gulp-babel')
 
 const isProduction = process.env.NODE_ENV === 'production'
+const sourceMap = {
+  stylus,
+  sass,
+  less
+}
 
 const webpack = require('webpack')
 const webpackStream = require('webpack-stream')
 const webpackConfig = require('./webpack.config.js')
 
-function resolve1(dir) {
-  return path.join(__dirname, '', dir)
-}
-
 function onErr(err) {
-  console.log(1)
-  console.log(err)
+  const title = err.plugin + ' ' + err.name
+  const msg = err.message
+  const errContent = msg.replace(/\n/g, '\\A ')
+  notify.onError({
+    title,
+    message: errContent,
+    sound: true
+  })(err)
+  this.emit('end')
 }
 
 function runTasks(tasks) {
@@ -74,12 +85,12 @@ gulp.task('scripts', function(callback) {
 
 gulp.task('html', _ => {
   return gulp
-    .src([resolve1('/**/*.html'), '!/src/include/**/*'])
+    .src(config.dev.html)
     .pipe(plumber(onErr))
     .pipe(
       fuleinclude({
         prefix: '@@',
-        basepath: resolve1('src/include/')
+        basepath: path.join(__dirname, './', 'src/include/')
       })
     )
     .pipe(
@@ -93,21 +104,31 @@ gulp.task('html', _ => {
         })
       )
     )
-    .pipe(gulp.dest(resolve1('dist')))
+    .pipe(gulp.dest(config.build.html))
+})
+
+Object.keys(sourceMap).forEach(key => {
+  let fn = sourceMap[key]
+  gulp.task(key, _ => {
+    return gulp
+      .src(config.dev.styles[key])
+      .pipe(plumber(onErr))
+      .pipe(fn())
+      .pipe(gulpif(isProduction, cleanCss({ debug: true })))
+      .pipe(postcss('./.postcssrc.js'))
+      .pipe(gulp.dest(config.build.styles))
+  })
 })
 
 gulp.task('styles', _ => {
-  return gulp
-    .src(config.dev.styles)
-    .pipe(plumber(onErr))
-    .pipe(stylus())
-    .pipe(gulpif(isProduction, cleanCss({ debug: true })))
-    .pipe(postcss('./.postcssrc.js'))
-    .pipe(gulp.dest(config.build.styles))
+  const tasks = ['stylus', 'sass', 'less']
+  runTasks(tasks).then(() => {
+    console.log(chalk.cyan('styles compiled.\n'))
+  })
 })
 
 gulp.task('static', () => {
-  return gulp.src('./static/**/*').pipe(gulp.dest(resolve1('dist/static')))
+  return gulp.src(config.dev.static).pipe(gulp.dest(config.build.static))
 })
 
 gulp.task('clean', () => {

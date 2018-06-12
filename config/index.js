@@ -6,12 +6,29 @@ function resolve(dir) {
 
 module.exports = {
   dev: {
-    styles: resolve('src/lib/styles/*.styl'),
-    scripts: resolve('src/lib/js/**/*.js')
+    static: './lib/**/*',
+    html: [resolve('src/**/*.html'), '!./src/include/**/*'],
+    allhtml: resolve('src/**/*.html'),
+    styles: {
+      stylus: resolve('src/lib/styles/*.styl'),
+      sass: resolve('src/lib/styles/*.{scss,sass,css}'),
+      less: resolve('src/lib/styles/*.less'),
+      css: resolve('src/lib/styles/*.css')
+    },
+    scripts: resolve('src/lib/js/**/*.js'),
+    images: resolve('src/lib/images/**/*.{png,jpg,gif,svg}')
   },
   build: {
+    static: resolve('dist/static'),
+    html: resolve('dist'),
     styles: resolve('dist/css'),
-    scripts: resolve('dist/js')
+    scripts: resolve('dist/js'),
+    images: resolve('dist/images')
+  },
+  zip: {
+    name: 'gulpProject.zip',
+    path: resolve('dist/**/*'),
+    dest: path.join(__dirname, '../')
   },
   useWebpack: true
 }
