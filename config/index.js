@@ -12,8 +12,7 @@ module.exports = {
     styles: {
       stylus: resolve('src/lib/styles/*.styl'),
       sass: resolve('src/lib/styles/*.{scss,sass,css}'),
-      less: resolve('src/lib/styles/*.less'),
-      css: resolve('src/lib/styles/*.css')
+      less: resolve('src/lib/styles/*.less')
     },
     scripts: resolve('src/lib/js/**/*.js'),
     images: resolve('src/lib/images/**/*.{png,jpg,gif,svg}')
