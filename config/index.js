@@ -1,5 +1,5 @@
 const path = require('path')
-
+const server = require('./server')
 function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
@@ -29,5 +29,6 @@ module.exports = {
     path: resolve('dist/**/*'),
     dest: path.join(__dirname, '../')
   },
-  useWebpack: true
+  useWebpack: true,
+  server
 }

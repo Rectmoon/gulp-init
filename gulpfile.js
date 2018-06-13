@@ -28,6 +28,10 @@ const webpack = require('webpack')
 const webpackStream = require('webpack-stream')
 const webpackConfig = require('./webpack.config.js')
 
+// server
+const browserSync = require('browser-sync').create()
+const reload = browserSync.reload
+
 function onErr(err) {
   const title = err.plugin + ' ' + err.name
   const msg = err.message
@@ -134,6 +138,26 @@ gulp.task('static', () => {
 gulp.task('clean', () => {
   del('./dist').then(paths => {
     console.log('Deleted files and folders:\n', paths.join('\n'))
+  })
+})
+
+gulp.task('watch', _ => {
+  gulp.watch(config.dev.allhtml, ['html']).on('change', reload)
+  let stylesObj = config.dev.styles
+  Object.keys(stylesObj).forEach(key => {
+    gulp.watch(stylesObj[key], [key]).on('change', reload)
+  })
+  // gulp.watch(config.dev.script, ['script']).on('change', reload)
+  // gulp.watch(config.dev.images, ['images']).on('change', reload)
+  // gulp.watch(config.dev.static, ['static']).on('change', reload)
+})
+
+gulp.task('server', _ => {
+  const tasks = ['html', 'stylus', 'sass', 'less']
+  runTasks(tasks).then(() => {
+    browserSync.init(config.server)
+    console.log(chalk.cyan('  Server complete.\n'))
+    gulp.start('watch')
   })
 })
 
