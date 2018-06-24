@@ -7,6 +7,7 @@ module.exports = {
     autoprefixer: {
       browsers: ['> 1%', 'last 6 versions', 'not ie <= 8']
     },
-    'css-mqpacker': {}
+    'css-mqpacker': {},
+    'postcss-opacity': {}
   }
 }

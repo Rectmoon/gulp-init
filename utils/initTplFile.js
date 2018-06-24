@@ -1,9 +1,9 @@
 const fs = require('fs')
 const path = require('path')
 const through = require('through2')
-const iconv = require('iconv-lite')
 const gutil = require('gulp-util')
 const config = require('../config')
+const iconv = require('iconv-lite')
 
 //项目目录
 var pName = ''
@@ -27,16 +27,13 @@ function initTplFile(base, projName, bFlag) {
       )
       return cb()
     }
-
     let fileContents = fs.readFileSync(chunk.path)
-    fileContents = iconv.decode(fileContents, 'gbk')
+    fileContents = iconv.decode(fileContents, 'utf8')
     let _base = base || chunk.base
-
     if (chunk.path.match(/\.s?htm*/)) {
       //把html的文件名提取出来
       let fileName = path.basename(chunk.path)
       fileName = fileName.substr(0, fileName.indexOf('.'))
-
       //把style标签里面的内容放到css文件里面去
       fileContents = indexLink(fileContents, _base, fileName)
       //插入必要的JS标签
@@ -53,6 +50,11 @@ function initTplFile(base, projName, bFlag) {
 
 //将style标签里面的内容写到css里面
 function indexLink(fileContents, base, fileName) {
+  /**
+   *!!!!!
+   *  如果没有替换成功，
+   * 可能要把编辑器的files.eol设置成'\r\n'(CRLF)
+   */
   return fileContents.replace(
     /<style((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)>(.*?\r\n)*(\s)*<\/style>/g,
     function(a, b, c, d) {
@@ -64,11 +66,10 @@ function indexLink(fileContents, base, fileName) {
           ''
         )
         .replace(/<\/style>/g, '')
-
       //写到css文件里面
       var cssFile = path.join(base, '/css/' + fileName + '.css')
       try {
-        a = iconv.encode(a, 'gbk')
+        a = iconv.encode(a, 'utf8')
         fs.writeFileSync(cssFile, a)
       } catch (e) {
         console.log(e)

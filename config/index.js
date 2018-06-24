@@ -6,13 +6,13 @@ function resolve(dir) {
 
 module.exports = {
   dev: {
-    static: './lib/**/*',
+    static: resolve('src/**/*'),
     html: [resolve('src/**/*.html'), '!./src/include/**/*'],
     allhtml: resolve('src/**/*.html'),
     styles: {
-      stylus: resolve('src/lib/styles/*.styl'),
-      sass: resolve('src/lib/styles/*.{scss,sass,css}'),
-      less: resolve('src/lib/styles/*.less')
+      stylus: resolve('src/css/*.styl'),
+      sass: resolve('src/css/*.{scss,sass,css}'),
+      less: resolve('src/csss/*.less')
     },
     scripts: resolve('src/js/**/*.js'),
     images: resolve('src/lib/images/**/*.{png,jpg,jpeg,gif,svg}')
@@ -40,7 +40,7 @@ module.exports = {
   ],
   libStyles: [
     '<link rel="stylesheet" href="css/reset.css" />',
-    '<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">'
+    '<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />'
   ],
   libScripts: [
     '<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>',

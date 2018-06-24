@@ -23,6 +23,7 @@ const pngquant = require('imagemin-pngquant')
 const eslint = require('gulp-eslint')
 const stripDebug = require('gulp-strip-debug')
 const rename = require('gulp-rename')
+const watch = require('gulp-watch')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const sourceMap = {
@@ -32,10 +33,11 @@ const sourceMap = {
 }
 const allTasks = [
   'html',
+  'replace',
   'stylus',
   'sass',
   'less',
-  'scripts',
+  'brow',
   'images',
   'static'
 ]
@@ -89,7 +91,6 @@ var browFile = require('./utils/browFile')
 var initTplFile = require('./utils/initTplFile')
 // 命令参数
 var argv = process.argv
-var taskName = argv[2]
 var taskParam = {}
 
 for (var i = 0, l = argv.length; i < l; i++) {
@@ -104,21 +105,30 @@ for (var i = 0, l = argv.length; i < l; i++) {
 }
 //根目录
 var baseDir = '../n/'
+// import export 处理
+var baseBrowserifyDir = '../browserify/'
 //监听目录
 var pDir = taskParam['-d'] || taskParam['-p']
+var _pDir = baseDir + pDir
+var isServing = taskParam.hasOwnProperty('-s')
 
-gulp.task('init', function() {
+gulp.task('init', () => {
   fs.stat(baseDir + pDir + '/conf.proj', function(err, stat) {
     if (stat && stat.isFile()) {
       console.log('文件已经初始化，如需重新初始化请删除目录文件')
       process.exit()
     }
   })
-  gulp.src('./tpl/**/').pipe(gulp.dest('./src'))
   return gulp.src('./tpl/**/*').pipe(gulp.dest(baseDir + pDir + '/'))
 })
 
-gulp.task('replace_html', ['init'], function() {
+gulp.task('copy', () => {
+  return gulp
+    .src([`${_pDir}/**/*`, `!${_pDir}/js/index.js`])
+    .pipe(gulp.dest('src'))
+})
+
+gulp.task('replace', isServing ? [] : ['init'], function() {
   var pName
   if (pDir.indexOf('n/') != -1) {
     pName = pDir.substr(pDir.indexOf('n/') + 2, pDir.length - 1)
@@ -126,7 +136,7 @@ gulp.task('replace_html', ['init'], function() {
     pName = pDir
   }
   return gulp
-    .src('./src' + '/*.htm*')
+    .src('src/*.htm*')
     .pipe(initTplFile(baseDir + pName + '', pName, config.useBrowserify))
     .pipe(gulp.dest(baseDir + pName))
 })
@@ -152,7 +162,7 @@ gulp.task('html', () => {
         })
       )
     )
-    .pipe(gulp.dest(config.build.html))
+    .pipe(gulp.dest(baseDir + pDir))
 })
 
 Object.keys(sourceMap).forEach(key => {
@@ -164,7 +174,7 @@ Object.keys(sourceMap).forEach(key => {
       .pipe(fn())
       .pipe(gulpif(isProduction, cleanCss({ debug: true })))
       .pipe(postcss('./.postcssrc.js'))
-      .pipe(gulp.dest(config.build.styles))
+      .pipe(gulp.dest(baseDir + pDir + '/css/'))
   })
 })
 
@@ -200,33 +210,29 @@ gulp.task('eslint', () => {
 })
 
 const useEslint = config.useEslint ? ['eslint'] : []
-gulp.task('brow', useEslint.concat('replace_html'), () => {
+gulp.task('brow', useEslint, () => {
+  gulp.src('src/js/*.js').pipe(gulp.dest(`${baseDir + pDir}/js/`))
   return gulp
     .src('src/js/dev.js')
     .pipe(plumber(onErr))
-    .pipe(
-      babel({
-        presets: ['env']
-      })
-    )
     .pipe(browFile())
     .pipe(rename('index.js'))
-    .pipe(gulp.dest(baseDir + pDir))
+    .pipe(gulp.dest(baseDir + pDir + '/js/'))
 })
 
-gulp.task('scripts', useEslint, () => {
-  return gulp
-    .src(config.dev.scripts)
-    .pipe(plumber(onErr))
-    .pipe(
-      babel({
-        presets: ['env']
-      })
-    )
-    .pipe(gulpif(config.useWebpack, webpackStream(webpackConfig, webpack)))
-    .pipe(gulpif(isProduction, uglify()))
-    .pipe(gulp.dest(config.build.scripts))
-})
+// gulp.task('scripts', useEslint, () => {
+//   return gulp
+//     .src(config.dev.scripts)
+//     .pipe(plumber(onErr))
+//     .pipe(
+//       babel({
+//         presets: ['env']
+//       })
+//     )
+//     .pipe(gulpif(config.useWebpack, webpackStream(webpackConfig, webpack)))
+//     .pipe(gulpif(isProduction, uglify()))
+//     .pipe(gulp.dest(baseDir + pDir + '/js/'))
+// })
 
 gulp.task('static', () => {
   return gulp.src(config.dev.static).pipe(gulp.dest(config.build.static))
@@ -241,25 +247,29 @@ gulp.task('clean', () => {
 gulp.task('watch', () => {
   let stylesObj = config.dev.styles
   Object.keys(stylesObj).forEach(key => {
-    gulp.watch(stylesObj[key], [key]).on('change', reload)
+    watch(stylesObj[key], e => {
+      gulp.start(key, reload)
+    })
   })
-  gulp.watch(config.dev.allhtml, ['html']).on('change', reload)
-  gulp.watch(config.dev.scripts, ['scripts']).on('change', reload)
-  gulp.watch(config.dev.images, ['images']).on('change', reload)
-  gulp.watch(config.dev.static, ['static']).on('change', reload)
+  // gulp.watch(config.dev.allhtml, ['html', 'replace']).on('change', reload)
+  watch(config.dev.images, e => {
+    gulp.start('image', reload)
+  })
+  watch(config.dev.scripts, e => {
+    gulp.start('brow', reload)
+  })
 })
 
 gulp.task('server', () => {
   runTasks(allTasks).then(() => {
-    browserSync.init(config.server)
+    browserSync.init({ server: baseDir + pDir })
     console.log(chalk.cyan('  Server Running.\n'))
     gulp.start('watch')
   })
 })
 
 gulp.task('build', () => {
-  runTasks(allTasks).then(res => {
-    console.log(res)
+  runTasks(allTasks).then(() => {
     console.log(
       chalk.cyan(`
       =======================
@@ -271,19 +281,32 @@ gulp.task('build', () => {
 })
 
 gulp.task('default', () => {
-  console.log(
-    chalk.green(
-      `
-      Build Setup:
-        开发环境： npm run dev
-        生产环境： npm run build
-        执行压缩： gulp zip
-        编译页面： gulp html
-        编译脚本： gulp script
-        编译样式： gulp {stylus, sass, less}
-        语法检测： gulp eslint
-        压缩图片： gulp images
-      `
-    )
-  )
+  // let isBrowserify = taskParam.hasOwnProperty('-b')
+  //检测项目目录是否存在
+  let tasks
+  try {
+    let stat = fs.statSync(_pDir)
+    tasks = ['copy']
+  } catch (e) {
+    tasks = ['init', 'replace']
+  }
+  runTasks(tasks).then(() => {
+    gulp.start('watch')
+  })
 })
+
+// console.log(
+//   chalk.green(
+//     `
+//     Build Setup:
+//       开发环境： npm run dev
+//       生产环境： npm run build
+//       执行压缩： gulp zip
+//       编译页面： gulp html
+//       编译脚本： gulp scripts
+//       编译样式： gulp {stylus, sass, less}
+//       语法检测： gulp eslint
+//       压缩图片： gulp images
+//     `
+//   )
+// )
