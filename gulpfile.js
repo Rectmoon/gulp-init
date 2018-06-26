@@ -126,9 +126,9 @@ gulp.task('copy', () => {
 
 gulp.task('replace', ['init'], () => {
   let pName =
-    pDir.indexOf('n/') != -1
-      ? pDir.substr(pDir.indexOf('n/') + 2, pDir.length - 1)
-      : pDir
+    pDir.indexOf('n/') != -1 ?
+    pDir.substr(pDir.indexOf('n/') + 2, pDir.length - 1) :
+    pDir
   try {
     fs.statSync(`./src/index.html`)
     return gulp
@@ -137,7 +137,7 @@ gulp.task('replace', ['init'], () => {
       .pipe(gulp.dest(baseDir + pName))
   } catch (e) {
     console.log('请在src目录新建index.html文件')
-    del(['src/**/*', '!src/js/', '!src/css/', '!src/*.html']).then(() => {
+    del('src/**/*').then(() => {
       process.exit()
     })
   }
