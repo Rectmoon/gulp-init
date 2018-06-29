@@ -6,16 +6,14 @@ function resolve(dir) {
 
 module.exports = {
   dev: {
-    static: resolve('src/**/*'),
+    // static: resolve('src/**/*'),
     html: [resolve('src/**/*.html'), '!./src/include/**/*'],
-    allhtml: resolve('src/**/*.html'),
-    styles: {
-      stylus: resolve('src/css/*.styl'),
-      sass: resolve('src/css/*.{scss,sass,css}'),
-      less: resolve('src/csss/*.less')
-    },
-    scripts: resolve('src/js/**/*.js'),
-    images: resolve('src/lib/images/**/*.{png,jpg,jpeg,gif,svg}')
+    // allhtml: resolve('src/**/*.html'),
+    stylus: resolve('src/styles/*.styl'),
+    sass: resolve('src/styles/*.{scss,sass,css}'),
+    less: resolve('src/styles/*.less'),
+    scripts: resolve('src/scripts/**/*.js'),
+    images: resolve('src/images/**/*.{png,jpg,jpeg,gif,svg}')
   },
   build: {
     static: resolve('dist/static'),
@@ -29,9 +27,8 @@ module.exports = {
     path: resolve('dist/**/*'),
     dest: path.join(__dirname, '../')
   },
-  useBrowserify: true,
   useEslint: true,
-  useWebpack: false,
+  files: ['index', 'main'],
   server,
   preFetchs: [
     '<meta http-equiv="x-dns-prefetch-control" content="on" />',

@@ -10,10 +10,7 @@ function browFile() {
   return through.obj((chunk, enc, cb) => {
     if (chunk.isNull()) return cb(null, chunk)
     if (chunk.isStream()) {
-      this.emit(
-        'error',
-        new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported')
-      )
+      this.emit('error', new gutil.PluginError(PLUGIN_NAME, 'Streaming not supported'))
       return cb()
     }
     const fileContents = fs.readFileSync(chunk.path)

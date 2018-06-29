@@ -12,6 +12,7 @@ module.exports = {
   extends: 'airbnb-base',
   // add your custom rules here
   rules: {
+    'no-undef': 0,
     'no-var': 0,
     'no-extend-native': 0,
     'no-param-reassign': 0, //禁止给参数重新赋值,

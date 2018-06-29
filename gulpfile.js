@@ -16,13 +16,11 @@ const sass = require('gulp-sass')
 const less = require('gulp-less')
 const postcss = require('gulp-postcss')
 const cleanCss = require('gulp-clean-css')
-const babel = require('gulp-babel')
 const cache = require('gulp-cache')
 const imagemin = require('gulp-imagemin')
 const pngquant = require('imagemin-pngquant')
 const eslint = require('gulp-eslint')
 const stripDebug = require('gulp-strip-debug')
-const rename = require('gulp-rename')
 const watch = require('gulp-watch')
 const browFile = require('./utils/browFile')
 const initTplFile = require('./utils/initTplFile')
@@ -33,24 +31,35 @@ const sourceMap = {
   sass,
   less
 }
-const allTasks = [
-  'html',
-  'replace',
-  'stylus',
-  'sass',
-  'less',
-  'brow',
-  'images',
-  'static'
-]
+const allTasks = ['html', 'replace', 'stylus', 'sass', 'less', 'scripts', 'images', 'static']
 
-const webpack = require('webpack')
-const webpackStream = require('webpack-stream')
-const webpackConfig = require('./webpack.config.js')
+// const webpack = require('webpack')
+// const webpackStream = require('webpack-stream')
+// const webpackConfig = require('./webpack.config.js')
 
 // server
 const browserSync = require('browser-sync').create()
 const reload = browserSync.reload
+
+// 命令参数
+let argv = process.argv
+let taskParam = {}
+for (let i = 0, l = argv.length; i < l; i++) {
+  if (argv[i].indexOf('-') === 0) {
+    if (argv[i + 1] && argv[i + 1].indexOf('-') === 0) {
+      taskParam[argv[i]] = ''
+    } else {
+      taskParam[argv[i]] = argv[i + 1]
+      i++
+    }
+  }
+}
+//根目录
+let baseDir = '../n/'
+//监听目录
+let pDir = taskParam['-d'] || taskParam['-p']
+let _pDir = baseDir + pDir
+let browFiles = config.files.map(item => `src/scripts/${item}.js`)
 
 function onErr(err) {
   const title = err.plugin + ' ' + err.name
@@ -66,7 +75,7 @@ function onErr(err) {
 
 function runTasks(tasks, sync) {
   return new Promise((resolve, reject) => {
-    del(['src/**/*', '!src/js/', '!src/css/', '!src/*.html'])
+    del(['src/**/*', '!src/*.html'])
       .then(() => {
         if (sync) {
           gulpSequence.apply(null, tasks)(() => {
@@ -84,28 +93,12 @@ function runTasks(tasks, sync) {
   })
 }
 
-// 命令参数
-var argv = process.argv
-var taskParam = {}
-
-for (var i = 0, l = argv.length; i < l; i++) {
-  if (argv[i].indexOf('-') === 0) {
-    if (argv[i + 1] && argv[i + 1].indexOf('-') === 0) {
-      taskParam[argv[i]] = ''
-    } else {
-      taskParam[argv[i]] = argv[i + 1]
-      i++
-    }
-  }
+function pickOpts(obj, arr) {
+  return arr.reduce((target, key) => {
+    target[key] = obj[key]
+    return target
+  }, {})
 }
-//根目录
-var baseDir = '../n/'
-// import export 处理
-var baseBrowserifyDir = '../browserify/'
-//监听目录
-var pDir = taskParam['-d'] || taskParam['-p']
-var _pDir = baseDir + pDir
-var isServing = taskParam.hasOwnProperty('-s')
 
 gulp.task('init', () => {
   fs.stat(`${_pDir}/conf.proj`, (err, stat) => {
@@ -114,26 +107,21 @@ gulp.task('init', () => {
       process.exit()
     }
   })
-  gulp.src('./tpl/**/*').pipe(gulp.dest('src'))
+  gulp.src(['./tpl/dev/**/*']).pipe(gulp.dest('src'))
   return gulp.src('./tpl/**/*').pipe(gulp.dest(`${_pDir}/`))
 })
 
 gulp.task('copy', () => {
-  return gulp
-    .src([`${_pDir}/**/*`, `!${_pDir}/js/index.js`])
-    .pipe(gulp.dest('src'))
+  return gulp.src([`${_pDir}/dev/**/*`, `${_pDir}/**/*.html`]).pipe(gulp.dest('src'))
 })
 
 gulp.task('replace', ['init'], () => {
-  let pName =
-    pDir.indexOf('n/') != -1 ?
-    pDir.substr(pDir.indexOf('n/') + 2, pDir.length - 1) :
-    pDir
+  let pName = pDir.indexOf('n/') != -1 ? pDir.substr(pDir.indexOf('n/') + 2, pDir.length - 1) : pDir
   try {
     fs.statSync(`./src/index.html`)
     return gulp
       .src('src/*.htm*')
-      .pipe(initTplFile(baseDir + pName + '', pName, config.useBrowserify))
+      .pipe(initTplFile(baseDir + pName + '', pName))
       .pipe(gulp.dest(baseDir + pName))
   } catch (e) {
     console.log('请在src目录新建index.html文件')
@@ -170,8 +158,9 @@ gulp.task('html', () => {
 Object.keys(sourceMap).forEach(key => {
   let fn = sourceMap[key]
   gulp.task(key, () => {
+    gulp.src(config.dev[key]).pipe(gulp.dest(`${_pDir}/dev/styles/`))
     return gulp
-      .src(config.dev.styles[key])
+      .src(pickOpts(config.dev, ['stylus', 'sass', 'less'])[key])
       .pipe(plumber(onErr))
       .pipe(fn())
       .pipe(gulpif(isProduction, cleanCss({ debug: true })))
@@ -212,13 +201,12 @@ gulp.task('eslint', () => {
 })
 
 const useEslint = config.useEslint ? ['eslint'] : []
-gulp.task('brow', useEslint, () => {
-  gulp.src('src/js/*.js').pipe(gulp.dest(`${_pDir}/js/`))
+gulp.task('scripts', useEslint, () => {
+  gulp.src('src/scripts/**/*.js').pipe(gulp.dest(`${_pDir}/dev/scripts/`))
   return gulp
-    .src('src/js/dev.js')
+    .src(browFiles)
     .pipe(plumber(onErr))
     .pipe(browFile())
-    .pipe(rename('index.js'))
     .pipe(gulp.dest(`${_pDir}/js/`))
 })
 
@@ -232,20 +220,11 @@ gulp.task('clean', () => {
   })
 })
 gulp.task('watch', () => {
-  let stylesObj = config.dev.styles
-  Object.keys(stylesObj).forEach(key => {
-    watch(stylesObj[key], e => {
+  let devObj = config.dev
+  Object.keys(devObj).forEach(key => {
+    watch(devObj[key], e => {
       gulp.start(key, reload)
     })
-  })
-  watch(config.dev.allhtml, e => {
-    gulp.start('html', reload)
-  })
-  watch(config.dev.images, e => {
-    gulp.start('image', reload)
-  })
-  watch(config.dev.scripts, e => {
-    gulp.start('brow', reload)
   })
 })
 
@@ -267,11 +246,10 @@ gulp.task('build', () => {
 })
 
 gulp.task('default', () => {
-  let tasks = ['stylus', 'sass', 'less', 'images']
+  let tasks = ['copy', 'stylus', 'sass', 'less', 'images']
   //检测项目目录是否存在
   try {
     fs.statSync(_pDir)
-    tasks.unshift('copy')
   } catch (e) {
     try {
       fs.statSync(`src/index.html`)
@@ -281,7 +259,7 @@ gulp.task('default', () => {
       process.exit()
     }
   }
-  taskParam.hasOwnProperty('-b') && tasks.push('brow')
+  taskParam.hasOwnProperty('-b') && tasks.push('scripts')
   taskParam.hasOwnProperty('-s') && tasks.push('server')
   runTasks(tasks, true).then(() => {
     gulp.start('watch')
