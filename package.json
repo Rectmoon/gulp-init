@@ -62,6 +62,7 @@
     "webpack-dev-server": "^3.1.4"
   },
   "dependencies": {
+    "good-storage": "^1.0.1",
     "jquery": "^3.3.1"
   }
 }

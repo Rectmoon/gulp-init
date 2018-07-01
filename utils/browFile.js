@@ -16,7 +16,9 @@ function browFile() {
     const fileContents = fs.readFileSync(chunk.path)
     try {
       browserify(chunk.path)
-        .transform('babelify', { presets: ['env'] })
+        .transform('babelify', {
+          presets: ['env']
+        })
         .bundle((err, res) => {
           if (err) {
             console.log('语法错误，取消browserify: ' + err)

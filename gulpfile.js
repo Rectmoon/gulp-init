@@ -10,7 +10,6 @@ const fuleinclude = require('gulp-file-include')
 const del = require('del')
 const chalk = require('chalk')
 const gulpSequence = require('gulp-sequence')
-const uglify = require('gulp-uglify')
 const stylus = require('gulp-stylus')
 const sass = require('gulp-sass')
 const less = require('gulp-less')
@@ -112,6 +111,7 @@ gulp.task('init', () => {
 })
 
 gulp.task('copy', () => {
+  gulp.src('lib/**/*').pipe(gulp.dest('src/lib/'))
   return gulp.src([`${_pDir}/dev/**/*`, `${_pDir}/**/*.html`]).pipe(gulp.dest('src'))
 })
 
@@ -192,7 +192,7 @@ gulp.task('images', () => {
 
 gulp.task('eslint', () => {
   return gulp
-    .src(config.dev.scripts)
+    .src('src/scripts/**/*.js')
     .pipe(plumber(onErr))
     .pipe(gulpif(isProduction, stripDebug()))
     .pipe(eslint({ configFle: './.eslintrc' }))
@@ -215,7 +215,7 @@ gulp.task('static', () => {
 })
 
 gulp.task('clean', () => {
-  del('src/**/*').then(paths => {
+  del('src/**').then(paths => {
     console.log('Deleted files and folders:\n', paths.join('\n'))
   })
 })
@@ -246,7 +246,7 @@ gulp.task('build', () => {
 })
 
 gulp.task('default', () => {
-  let tasks = ['copy', 'stylus', 'sass', 'less', 'images']
+  let tasks = ['copy']
   //检测项目目录是否存在
   try {
     fs.statSync(_pDir)
@@ -254,6 +254,7 @@ gulp.task('default', () => {
     try {
       fs.statSync(`src/index.html`)
       tasks.unshift('replace')
+      tasks = tasks.concat(['stylus', 'sass', 'less'])
     } catch (err) {
       console.log('请在src目录新建index.html')
       process.exit()

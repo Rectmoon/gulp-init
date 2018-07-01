@@ -8,7 +8,6 @@ module.exports = {
   dev: {
     // static: resolve('src/**/*'),
     html: [resolve('src/**/*.html'), '!./src/include/**/*'],
-    // allhtml: resolve('src/**/*.html'),
     stylus: resolve('src/styles/*.styl'),
     sass: resolve('src/styles/*.{scss,sass,css}'),
     less: resolve('src/styles/*.less'),
@@ -28,7 +27,7 @@ module.exports = {
     dest: path.join(__dirname, '../')
   },
   useEslint: true,
-  files: ['index', 'main'],
+  files: ['index'],
   server,
   preFetchs: [
     '<meta http-equiv="x-dns-prefetch-control" content="on" />',
