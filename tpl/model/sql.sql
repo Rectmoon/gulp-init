@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `xxx_choose_zone` (
   `charac_no` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `uin` (`uin`)
-) ENGINE=Innodb DEFAULT CHARSET=gbk COMMENT='°ó¶¨´óÇø¼ÇÂ¼' AUTO_INCREMENT=1 ;
+) ENGINE=Innodb DEFAULT CHARSET=gbk COMMENT='ï¿½ó¶¨´ï¿½ï¿½ï¿½ï¿½ï¿½Â¼' AUTO_INCREMENT=1 ;
 
 
 
@@ -15,13 +15,13 @@ CREATE TABLE IF NOT EXISTS `xxx_present_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uin` bigint(20) NOT NULL,
   `created` datetime NOT NULL,
-  `present_id` varchar(32) NOT NULL COMMENT 'Àñ°üID',
+  `present_id` varchar(32) NOT NULL COMMENT 'ï¿½ï¿½ï¿½ID',
   `present` varchar(1024) NOT NULL,
   `level` smallint(8) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `present_id_level` (`present_id`,`level`),
   KEY `uin_present_id` (`uin`,`present_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=gbk COMMENT='ÁìÈ¡Àñ°ü¼ÇÂ¼';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=gbk COMMENT='ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Â¼';
 
 
 
@@ -33,7 +33,7 @@ CREATE TABLE `xxx_lottery_chance` (
   `created` datetime NOT NULL,
   `present_id` varchar(32) NOT NULL COMMENT '1=rule1,2=rule2',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0=init, 1=get_lottery',
-  `lottery_time` datetime DEFAULT NULL COMMENT '³é½±Ê±¼ä',
+  `lottery_time` datetime DEFAULT NULL COMMENT 'ï¿½é½±Ê±ï¿½ï¿½',
   PRIMARY KEY (`id`),
   KEY `uin` (`uin`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=gbk;

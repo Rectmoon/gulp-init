@@ -1,6 +1,6 @@
 <?php
   	class ChooseZoneModel extends AppPresentLogModel {
 		protected $table = 'xxx_choose_zone';
-		protected $want_dr = true;	//´Ódr(´ÓÊý¾Ý¿â)ÖÐ¶ÁÈ¡Êý¾Ý
+		protected $want_dr = true;	//ï¿½ï¿½dr(ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½)ï¿½Ð¶ï¿½È¡ï¿½ï¿½ï¿½ï¿½
 	}
 ?>

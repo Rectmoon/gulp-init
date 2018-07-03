@@ -3,14 +3,14 @@
 
 
 	class LotteryChanceModel extends AppModel {
-		protected $table = 'xxx_lottery_chance';	//todo ÐÞ¸Ä
-		protected $want_dr = true;	//´Ódr(´ÓÊý¾Ý¿â)ÖÐ¶ÁÈ¡Êý¾Ý
+		protected $table = 'xxx_lottery_chance';	//todo ï¿½Þ¸ï¿½
+		protected $want_dr = true;	//ï¿½ï¿½dr(ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½)ï¿½Ð¶ï¿½È¡ï¿½ï¿½ï¿½ï¿½
 
 
 		/**
-		 * »ñÈ¡³é½±´ÎÊý
-		 * @param string  $uin qqºÅÂë
-		 * @param int $reason ³é½±µÄÔ­Òò
+		 * ï¿½ï¿½È¡ï¿½é½±ï¿½ï¿½ï¿½ï¿½
+		 * @param string  $uin qqï¿½ï¿½ï¿½ï¿½
+		 * @param int $reason ï¿½é½±ï¿½ï¿½Ô­ï¿½ï¿½
 		 */
 		function get_num($uin, $reason, $params = array()){
 			$default = array(
@@ -39,16 +39,16 @@
 
 
 		/**
-		 * ÐÞ¸Älottery chanceµÄ×´Ì¬
-		 * @param string  $uin qqºÅÂë
-		 * @param int $reason ³é½±µÄÔ­Òò
-		 * @param string $present »ñµÃ½±Æ·µÄ×Ö·û´®
-		 * @param int $level ³éÖÐµÈ¼¶
-		 * @param array $params ÆäËû²ÎÊý
+		 * ï¿½Þ¸ï¿½lottery chanceï¿½ï¿½×´Ì¬
+		 * @param string  $uin qqï¿½ï¿½ï¿½ï¿½
+		 * @param int $reason ï¿½é½±ï¿½ï¿½Ô­ï¿½ï¿½
+		 * @param string $present ï¿½ï¿½Ã½ï¿½Æ·ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
+		 * @param int $level ï¿½ï¿½ï¿½ÐµÈ¼ï¿½
+		 * @param array $params ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		 */
 		function update_chance($uin, $reason, $present, $level, $params = array()){
 			$default = array(
-				'update_today' => true,		//Ö»¸üÐÂ½ñÌìµÄ³é½±¼ÇÂ¼
+				'update_today' => true,		//Ö»ï¿½ï¿½ï¿½Â½ï¿½ï¿½ï¿½Ä³é½±ï¿½ï¿½Â¼
 				'old_status' => 0,
 				'new_status' => 1
 			);
@@ -74,9 +74,9 @@
 		}
 
 		/**
-		 * »ñÈ¡´ÎÊý£¬ ²»ÅÐ¶Ïstatus
-		 * @param string  $uin qqºÅÂë
-		 * @param int $reason ³é½±µÄÔ­Òò
+		 * ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ð¶ï¿½status
+		 * @param string  $uin qqï¿½ï¿½ï¿½ï¿½
+		 * @param int $reason ï¿½é½±ï¿½ï¿½Ô­ï¿½ï¿½
 		 */
 		function get_num_without_status($uin, $reason, $params = array()){
 			$default = array(
@@ -97,7 +97,7 @@
 		}
 
 		/**
-		 * Ìí¼Ó³é½±»ú»á
+		 * ï¿½ï¿½Ó³é½±ï¿½ï¿½ï¿½ï¿½
 		 */
 		function add_lottery_chance($uin, $reason){
 			$data = array(
