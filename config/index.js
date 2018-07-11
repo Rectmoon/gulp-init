@@ -36,6 +36,7 @@ module.exports = {
   ],
   libStyles: [
     '<link rel="stylesheet" href="css/reset.css" />',
+    '<link rel="stylesheet" href="css/common.css" />',
     '<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />'
   ],
   libScripts: [
