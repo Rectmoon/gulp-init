@@ -41,6 +41,8 @@ const browser = {
    * 是否gecko浏览器
    */
   gecko: /gecko/.test(userAgent),
+
+  weixin: userAgent.indexOf('micromessenger') !== -1,
   /**
    * 是否IE6
    */
@@ -69,11 +71,15 @@ const browser = {
   },
   // 获取页面最大高度
   getMaxH() {
-    return this.getPageHeight() > this.getWinHeight() ? this.getPageHeight() : this.getWinHeight()
+    return this.getPageHeight() > this.getWinHeight()
+      ? this.getPageHeight()
+      : this.getWinHeight()
   },
   //获取页面最大宽度
   getMaxW() {
-    return this.getPageWidth() > this.getWinWidth() ? this.getPageWidth() : this.getWinWidth()
+    return this.getPageWidth() > this.getWinWidth()
+      ? this.getPageWidth()
+      : this.getWinWidth()
   },
   //网页内容高度
   getPageHeight() {
@@ -83,7 +89,9 @@ const browser = {
         : document.body.scrollHeight > document.body.offsetHeight
           ? document.body.scrollHeight
           : document.body.offsetHeight
-    return h > document.documentElement.scrollHeight ? h : document.documentElement.scrollHeight
+    return h > document.documentElement.scrollHeight
+      ? h
+      : document.documentElement.scrollHeight
   },
   //网页内容宽度
   getPageWidth() {
@@ -111,7 +119,10 @@ const browser = {
   },
   //设置dom透明度
   setOpacity(ele, level) {
-    if (this.browser.msie && (!document.documentMode || document.documentMode < 9)) {
+    if (
+      this.browser.msie &&
+      (!document.documentMode || document.documentMode < 9)
+    ) {
       ele.style.filter = 'Alpha(opacity=' + level + ')'
     } else {
       ele.style.opacity = level / 100

@@ -6,28 +6,11 @@ function resolve(dir) {
 
 module.exports = {
   dev: {
-    // static: resolve('src/**/*'),
-    html: [resolve('src/**/*.html'), '!./src/include/**/*'],
     stylus: resolve('src/styles/*.styl'),
     sass: resolve('src/styles/*.{scss,sass,css}'),
     less: resolve('src/styles/*.less'),
-    scripts: resolve('src/scripts/**/*.js'),
-    images: resolve('src/images/**/*.{png,jpg,jpeg,gif,svg}')
+    js: resolve('src/scripts/**/*.js')
   },
-  build: {
-    static: resolve('dist/static'),
-    html: resolve('dist'),
-    styles: resolve('dist/css'),
-    scripts: resolve('dist/js'),
-    images: resolve('dist/images')
-  },
-  zip: {
-    name: 'gulpProject.zip',
-    path: resolve('dist/**/*'),
-    dest: path.join(__dirname, '../')
-  },
-  useEslint: true,
-  files: ['index'],
   server,
   preFetchs: [
     '<meta http-equiv="x-dns-prefetch-control" content="on" />',

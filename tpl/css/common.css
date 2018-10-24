@@ -88,7 +88,8 @@
   width: 45px;
   height: 45px;
   left: 50px;
-  background: url(http://ossweb-img.qq.com/images/chanpin/tgp/public/global/sprite.png) no-repeat;
+  background: url(http://ossweb-img.qq.com/images/chanpin/tgp/public/global/sprite.png)
+    no-repeat;
 }
 .my_pop .pop_bd .icon_yes {
   background-position: -88px -88px;
@@ -110,7 +111,8 @@
   line-height: 28px;
   padding-right: 20px;
   cursor: pointer;
-  background: url(http://ossweb-img.qq.com/images/chanpin/tgp/public/global/sprite.png) right -30px no-repeat;
+  background: url(http://ossweb-img.qq.com/images/chanpin/tgp/public/global/sprite.png)
+    right -30px no-repeat;
   _background-image: url(http://ossweb-img.qq.com/images/chanpin/tgp/public/global/sprite_ie6.png);
   color: #fff;
   text-decoration: none;
@@ -124,7 +126,8 @@
   height: 29px;
   line-height: 28px;
   color: #524974;
-  background: url(http://ossweb-img.qq.com/images/chanpin/tgp/public/global/sprite.png) -390px 0 no-repeat;
+  background: url(http://ossweb-img.qq.com/images/chanpin/tgp/public/global/sprite.png) -390px
+    0 no-repeat;
   _background-image: url(http://ossweb-img.qq.com/images/chanpin/tgp/public/global/sprite_ie6.png);
   padding-left: 20px;
   overflow: hidden;
@@ -137,8 +140,8 @@
   line-height: 28px;
   padding-right: 20px;
   cursor: pointer;
-  background: url(http://ossweb-img.qq.com/images/chanpin/tgp/public/global/sprite.png) right -150px
-    no-repeat;
+  background: url(http://ossweb-img.qq.com/images/chanpin/tgp/public/global/sprite.png)
+    right -150px no-repeat;
   _background-image: url(http://ossweb-img.qq.com/images/chanpin/tgp/public/global/sprite_ie6.png);
   color: #838383;
   text-decoration: none;
