@@ -27,7 +27,7 @@ module.exports = {
     dest: path.join(__dirname, '../')
   },
   useEslint: true,
-  files: ['index'],
+  files: ['index', 'demo'],
   server,
   preFetchs: [
     '<meta http-equiv="x-dns-prefetch-control" content="on" />',

@@ -9,7 +9,6 @@ module.exports = {
   env: {
     browser: true
   },
-  extends: 'airbnb-base',
   // add your custom rules here
   rules: {
     'comma-dangle': [

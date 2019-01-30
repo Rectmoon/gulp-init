@@ -30,11 +30,16 @@ const sourceMap = {
   sass,
   less
 }
-const allTasks = ['html', 'replace', 'stylus', 'sass', 'less', 'scripts', 'images', 'static']
-
-// const webpack = require('webpack')
-// const webpackStream = require('webpack-stream')
-// const webpackConfig = require('./webpack.config.js')
+const allTasks = [
+  'html',
+  'replace',
+  'stylus',
+  'sass',
+  'less',
+  'scripts',
+  'images',
+  'static'
+]
 
 // server
 const browserSync = require('browser-sync').create()
@@ -112,11 +117,16 @@ gulp.task('init', () => {
 
 gulp.task('copy', () => {
   gulp.src('lib/**/*').pipe(gulp.dest('src/lib/'))
-  return gulp.src([`${_pDir}/dev/**/*`, `${_pDir}/**/*.html`]).pipe(gulp.dest('src'))
+  return gulp
+    .src([`${_pDir}/dev/**/*`, `${_pDir}/**/*.html`])
+    .pipe(gulp.dest('src'))
 })
 
 gulp.task('replace', ['init'], () => {
-  let pName = pDir.indexOf('n/') != -1 ? pDir.substr(pDir.indexOf('n/') + 2, pDir.length - 1) : pDir
+  let pName =
+    pDir.indexOf('n/') != -1
+      ? pDir.substr(pDir.indexOf('n/') + 2, pDir.length - 1)
+      : pDir
   try {
     fs.statSync(`./src/index.html`)
     return gulp
@@ -202,6 +212,7 @@ gulp.task('eslint', () => {
 
 const useEslint = config.useEslint ? ['eslint'] : []
 gulp.task('scripts', useEslint, () => {
+  console.log(1)
   gulp.src('src/scripts/**/*.js').pipe(gulp.dest(`${_pDir}/dev/scripts/`))
   return gulp
     .src(browFiles)
